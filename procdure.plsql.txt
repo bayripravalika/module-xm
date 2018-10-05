@@ -1,0 +1,45 @@
+
+Q.1). procedure :
+
+
+
+Alter Table electricity_consumer add electricty_bill number;
+
+create or replace procedure billcalc(p number) as
+vunits number;
+vtotal number;
+
+noconsumer exception;
+
+begin
+
+select unitsconsumed into vunits from electricity_consumer where consumerno=p;
+
+
+if(vunits<=100)
+
+{
+vtotal=02.96*vunits;
+
+update electricity_consumer set electricity_bill=vtotal where consumerno=p;
+}
+
+
+else
+
+
+{
+vtotal=02.96*vunits + (vunits-100)*05.56;
+
+update electricity_consumer set electricity_bill=vtotal where consumerno=p;
+}
+
+
+exception
+
+
+if noconsumer then
+
+DBMS_OUTPUT.PUT_LINE('consumer does not exist');
+    
+end billcalc;

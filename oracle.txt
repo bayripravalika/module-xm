@@ -1,0 +1,162 @@
+
+//*****************************SECTION 3******************************//
+
+
+Q) electricity consumer and electricity_bill
+
+
+
+
+Table for ELECTRIC_CONSUMER :
+
+
+
+Drop table electricity_consumer CASCADE constraints;
+
+Drop table electricity_bill;
+
+Drop sequence billid_seq;
+
+
+.............creating a table..............
+
+
+
+create table electricity_consumer(consumer_no number primary key, consumer_name varchar2(20) not null, emailId varchar2(35), units_consumed number);
+
+insert into electricity_consumer values(1001, 'seema joshi', 'seema.joshi@gmail.com', 250);
+.
+.(given data)
+.
+
+
+select * from electricity_consumer;
+
+OUTPUT:
+
+CONSUMER_NO CONSUMER_NAME        EMAILID			UNITS_CONSUMED
+
+----------- -------------------- ----------------------------	--------------
+
+       1001 seema joshi          seema.joshi@gmail.com		  250
+         
+
+       1002 amey joshi           amey@gmail.com		          345
+        
+
+       1003 pravin               pravin.t@gmail.com		  457
+         
+
+       1004 shrikanth shinde     shirikanth.shinde@gmail.com	  780
+           
+
+       1005 manoj                manoj@gmail.com		  90
+           
+
+       1006 mahesh B             bmahsh@gmail.com		  720
+          
+
+
+Table for ELECTRICITY_BILL
+
+
+create table electricity_bill(bill_no number primary key, consumer_no number references electricity_consumer(consumer_no), bill_amount number, billPaidDate date);
+
+
+insert into electricity_bill values(101, 1001, 440.45, '25-may-2017');
+
+.
+.
+.
+(given data)
+
+ select * from electricity_bill;
+
+
+	OUTPUT: 
+
+   	BILL_NO CONSUMER_NO BILL_AMOUNT BILLPAIDD
+  	 ---------- ----------- ----------- ---------
+      	 101        1001      440.45 25-MAY-17
+      	 102        1002         690 02-JUN-18
+      	 103        1001         675 05-AUG-17
+      	 104        1004         678 05-AUG-00
+      	 105        1005         643 08-JAN-01
+      	 106        1004         900 08-FEB-10
+      	 107        1003         842 12-MAY-01
+      	 108        1002         421 18-SEP-09
+      	 109        1005         346 18-AUG-05
+         110        1005         342 26-JUL-01
+
+
+
+
+
+SEQUENCE:
+
+
+create sequence billid_seq start with 111 increment by 1;
+
+select billid_seq.Nextval from dual;
+
+    OUTPUT:
+
+ 	NEXTVAL
+	--------
+    	 111
+
+
+
+Q.2. .........................SOLVE ANY 2 OUT OF 3.........................
+
+
+
+
+
+01). select consumer_no, consumer_name, units_consumed from  electricity_consumer where units_consumed  = (select max(units_consumed) from electricity_consumer);
+ 
+
+	OUTPUT:
+
+	CONSUMER_NO CONSUMER_NAME        UNITS_CONSUMED
+	----------- -------------------- --------------
+      	 1004 shrikanth shinde                780
+
+
+
+
+
+02).select consumer_no, count(*) from electricity_bill group by consumer_no having count(*) >= 1;
+
+	OUTPUT:
+
+	CONSUMER_NO   COUNT(*)
+	----------- ----------
+      	 1003          1
+      	 1001          2
+      	 1002          2
+       	 1004          2
+         1005          3
+
+
+03).  select * from electricity_bill where to_char(billPaidDate,'dd')>15;
+
+
+	OUTPUT: 
+
+	BILL_NO CONSUMER_NO BILL_AMOUNT BILLPAIDD
+	----- ----------- ----------- ---------
+  	101        1001      440.45 25-MAY-17
+  	108        1002         421 18-SEP-09
+  	109        1005         346 18-AUG-05
+  	110        1005         342 26-JUL-01
+
+
+
+Q.3) add 2 columns billPaymentDate
+
+
+   ALTER table electricity_bill ADD (Bill_Payment_Date date, Bill_Payment_Due_Date date);
+    
+   ALTER table electricity_bill ADD constraint Bill_Payment_Due_Date Check (Bill_Payment_Due_date between Bill_Payment_Date and Bill_Payment_date+7);
+
